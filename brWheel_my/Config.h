@@ -87,7 +87,7 @@
 #define B1PORTBIT 3 // bit3
 #define BUTTON2 15 // pin15, used for button2 instead
 #define B2PORTBIT 1 // bit1
-#ifndef USE_CENTERBTN // if not using center button
+#ifndef USE_CENTERBTN // if not using center button3
 #define BUTTON3 2 // pin2, used for button3 instead
 #define B3PORTBIT 1 // read bit1 of PIND
 #else // if we use center button it uses the pin2

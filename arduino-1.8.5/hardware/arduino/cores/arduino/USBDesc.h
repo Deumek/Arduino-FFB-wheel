@@ -1,39 +1,49 @@
+/*
+   Copyright (c) 2011, Peter Barrett
+   Copyright (c) 2015, Arduino LLC
 
+   Permission to use, copy, modify, and/or distribute this software for
+   any purpose with or without fee is hereby granted, provided that the
+   above copyright notice and this permission notice appear in all copies.
 
-/* Copyright (c) 2011, Peter Barrett
-**
-** Permission to use, copy, modify, and/or distribute this software for
-** any purpose with or without fee is hereby granted, provided that the
-** above copyright notice and this permission notice appear in all copies.
-**
-** THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
-** WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
-** WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
-** BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
-** OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
-** WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
-** ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
-** SOFTWARE.
-*/
+   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+   WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+   WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR
+   BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES
+   OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+   WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
+   ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+   SOFTWARE.
+ */
 
+#define PLUGGABLE_USB_ENABLED
+
+#if defined(EPRST6)
+#define USB_ENDPOINTS 7 // AtMegaxxU4
+#else
+#define USB_ENDPOINTS 5 // AtMegaxxU2
+#endif
+
+#define ISERIAL_MAX_LEN     20
+
+// Uncomment the following line or pass -DCDC_DISABLED to the compiler
+// to disable CDC (serial console via USB).
+// That's useful if you want to create an USB device (like an USB Boot Keyboard)
+// that works even with problematic devices (like KVM switches).
+// Keep in mind that with this change you'll have to use the Arduino's
+// reset button to be able to flash it.
+//#define CDC_DISABLED
+
+#ifndef CDC_DISABLED
 #define CDC_ENABLED
-#define HID_ENABLED
-
+#endif
 
 #ifdef CDC_ENABLED
 #define CDC_INTERFACE_COUNT	2
 #define CDC_ENPOINT_COUNT	3
-#else
+#else // CDC_DISABLED
 #define CDC_INTERFACE_COUNT	0
 #define CDC_ENPOINT_COUNT	0
-#endif
-
-#ifdef HID_ENABLED
-#define HID_INTERFACE_COUNT	1
-#define HID_ENPOINT_COUNT	2
-#else
-#define HID_INTERFACE_COUNT	0
-#define HID_ENPOINT_COUNT	0
 #endif
 
 #define CDC_ACM_INTERFACE	0	// CDC ACM
@@ -43,69 +53,11 @@
 #define CDC_ENDPOINT_OUT	(CDC_FIRST_ENDPOINT+1)
 #define CDC_ENDPOINT_IN		(CDC_FIRST_ENDPOINT+2)
 
-#define HID_INTERFACE		(CDC_ACM_INTERFACE + CDC_INTERFACE_COUNT)		// HID Interface
-#define HID_FIRST_ENDPOINT	(CDC_FIRST_ENDPOINT + CDC_ENPOINT_COUNT)	// 1 + 3
-#define HID_ENDPOINT_INT	(HID_FIRST_ENDPOINT)
-#define HID_ENDPOINT_OUT	(HID_FIRST_ENDPOINT+1)
-
 #define INTERFACE_COUNT		(MSC_INTERFACE + MSC_INTERFACE_COUNT)
 
-#ifdef CDC_ENABLED
 #define CDC_RX CDC_ENDPOINT_OUT
 #define CDC_TX CDC_ENDPOINT_IN
-#endif
 
-#ifdef HID_ENABLED
-#define HID_TX HID_ENDPOINT_INT
-#define HID_RX HID_ENDPOINT_OUT
-
-#define NB_AXIS			     5
-#define NB_FF_AXIS		   2  //1
-#define NB_BUTTONS		  24  //16
-#define X_AXIS_NB_BITS	16  //16
-#define Y_AXIS_NB_BITS	16	//10
-#define Z_AXIS_NB_BITS	12  //10
-#define RX_AXIS_NB_BITS	12  //10
-#define RY_AXIS_NB_BITS 12  //10
-#define RZ_AXIS_NB_BITS 12  //10
-
-#define X_AXIS_LOG_MAX	((1L<<(X_AXIS_NB_BITS))-1)//((1L<<(X_AXIS_NB_BITS-1))-1)
-#define X_AXIS_LOG_MIN	0//(-X_AXIS_LOG_MAX)
-#define X_AXIS_PHYS_MAX	((1L<<X_AXIS_NB_BITS)-1)
-
-#define Y_AXIS_LOG_MAX	((1L<<(Y_AXIS_NB_BITS))-1)
-#define Y_AXIS_LOG_MIN	0//(-Y_AXIS_LOG_MAX)
-#define Y_AXIS_PHYS_MAX	((1L<<Y_AXIS_NB_BITS)-1)
-
-#define Z_AXIS_LOG_MAX	((1L<<(Z_AXIS_NB_BITS))-1)
-#define Z_AXIS_LOG_MIN	0//(-Z_AXIS_LOG_MAX)
-#define Z_AXIS_PHYS_MAX	((1L<<Z_AXIS_NB_BITS)-1)
-
-#define RX_AXIS_LOG_MAX	((1L<<(RX_AXIS_NB_BITS))-1)
-#define RX_AXIS_LOG_MIN	0//(-RX_AXIS_LOG_MAX)
-#define RX_AXIS_PHYS_MAX	((1L<<RX_AXIS_NB_BITS)-1)
-
-#define RY_AXIS_LOG_MAX  ((1L<<(RY_AXIS_NB_BITS))-1)
-#define RY_AXIS_LOG_MIN 0//(-RY_AXIS_LOG_MAX)
-#define RY_AXIS_PHYS_MAX  ((1L<<RY_AXIS_NB_BITS)-1)
-
-#define RZ_AXIS_LOG_MAX  ((1L<<(RZ_AXIS_NB_BITS))-1)
-#define RZ_AXIS_LOG_MIN 0//(-RX_AXIS_LOG_MAX)
-#define RZ_AXIS_PHYS_MAX  ((1L<<RZ_AXIS_NB_BITS)-1)
-
-//#define SendInputReport(m_x,m_y,m_z,m_buttons)			Joystick.send_12(m_x,m_y,m_z,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_buttons)			Joystick.send_16_12_12(m_x,m_y,m_z,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_buttons)			Joystick.send_16_16_12(m_x,m_y,m_z,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_buttons)			Joystick.send_16_10_10_10(m_x,m_y,m_z,m_rx,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_buttons)			Joystick.send_16_16_12(m_x,m_y,m_z,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_buttons)			Joystick.send_16_10_18(m_x,m_y,m_z,m_rx,m_buttons) // milos, ver1
-//#define SendInputReport(m_x,m_y,m_z,m_rx,sx,sy,m_buttons)			Joystick.send_16_8_32(m_x,m_y,m_z,m_rx,sx,sy,m_buttons)
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_buttons)			Joystick.send_16_16_10_10_12(m_x,m_y,m_z,m_rx,m_buttons) // milos, ver2
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_buttons)      Joystick.send_16_16_12_12_32(m_x,m_y,m_z,m_rx,m_buttons) // milos, ver3
-#define SendInputReport(m_x,m_y,m_z,m_rx,m_ry,m_buttons)      Joystick.send_16_16_12_12_12_28(m_x,m_y,m_z,m_rx,m_ry,m_buttons) // milos, ver4
-//#define SendInputReport(m_x,m_y,m_z,m_rx,m_ry,m_rz,m_buttons)      Joystick.send_16_16_12_12_12_12_32(m_x,m_y,m_z,m_rx,m_ry,m_rz,m_buttons) // milos, ver5
-
-#endif
-
-#define IMANUFACTURER	1
-#define IPRODUCT		2
+#define IMANUFACTURER   1
+#define IPRODUCT        2
+#define ISERIAL         3

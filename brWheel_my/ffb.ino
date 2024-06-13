@@ -93,7 +93,7 @@ void FreeAllEffects(void);
 
 #if defined(__AVR_ATmega32U4__)										// On arduino uno we don't have USB
 
-b8 HID_GetReport (Setup& setup)
+b8 HID_GetReport (USBSetup& setup)
 {
   u8 report_id = setup.wValueL;
   u8 report_type = setup.wValueH;
@@ -116,7 +116,7 @@ b8 HID_GetReport (Setup& setup)
   return (false);
 }
 
-b8 HID_SetReport (Setup& setup)
+b8 HID_SetReport (USBSetup& setup)
 {
   u8 report_id = setup.wValueL;
   u8 report_type = setup.wValueH;
@@ -130,7 +130,7 @@ b8 HID_SetReport (Setup& setup)
   return (true);
 }
 
-b8 FFB_HID_Setup (Setup& setup)
+b8 FFB_HID_Setup (USBSetup& setup)
 {
   u8 r = setup.bRequest;
   u8 requestType = setup.bmRequestType;

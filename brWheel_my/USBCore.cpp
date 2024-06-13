@@ -365,7 +365,7 @@ void InitEndpoints()
 
 //	Handle CLASS_INTERFACE requests
 static
-bool ClassInterfaceRequest(Setup& setup)
+bool ClassInterfaceRequest(USBSetup& setup)
 {
   u8 i = setup.wIndex;
 #ifdef CDC_ENABLED
@@ -467,7 +467,7 @@ bool SendConfiguration(int maxlen)
 u8 _cdcComposite = 0;
 
 static
-bool SendDescriptor(Setup& setup)
+bool SendDescriptor(USBSetup& setup)
 {
   u8 t = setup.wValueH;
   if (USB_CONFIGURATION_DESCRIPTOR_TYPE == t)
@@ -515,7 +515,7 @@ ISR(USB_COM_vect)
   if (!ReceivedSetupInt())
     return;
 
-  Setup setup;
+  USBSetup setup;
   Recv((u8*)&setup, 8);
   ClearSetupInt();
 

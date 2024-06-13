@@ -929,7 +929,7 @@ s16 WEAK HID_ReceiveReport(void* data, int len)
   return (USB_Recv(HID_RX, data, len));
 }
 
-b8 WEAK HID_Setup(Setup& setup)
+b8 WEAK HID_Setup(USBSetup& setup)
 {
   u8 r = setup.bRequest;
   u8 requestType = setup.bmRequestType;
